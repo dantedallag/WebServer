@@ -1,6 +1,7 @@
-import socket
-import threading
-import datetime
+import socket # for sockets
+import threading # for threading
+import datetime # for date in HTTP response
+import sys # for command line arguments
 
 # class that overrides Thread. Used to fetch a requested file.
 class myClientThread(threading.Thread):
@@ -119,7 +120,31 @@ class myServer(object):
 
 # main function
 if __name__ == "__main__":
+	#make sure all options have been specified
+	if len(sys.argv) - 1 != 4:
+		print("Error: wrong number of arguments")
+		sys.exit()
+
+	# check for root directory
+	if sys.argv[1] == "-document_root":
+		if isinstance(sys.argv[2],str):
+			FILEPATH = sys.argv[2] + "/"
+		else:
+			print("Error: document root should be of type str")
+			sys.exit()
+	else:
+		print("Error: document root not specified correctly")
+		sys.exit()
+
+	# check for port
+	if sys.argv[3] == '-port':
+		PORT = int(sys.argv[4])
+	else:
+		print("Error: port not specified correctly")
+		sys.exit()
+
+	# always run on localhost
 	HOST = "127.0.0.1"
-	PORT = 8765
-	FILEPATH = "/Users/dantedg/Documents/ClassWork/DistributedSystems/"
+
+	# start server
 	server = myServer(HOST, PORT, FILEPATH).run_server()
